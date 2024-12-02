@@ -1,0 +1,399 @@
+<link
+  href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+  rel="stylesheet"
+  id="bootstrap-css"
+/>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy Savings Calculator</title>
+    
+    <!-- Link to external CSS file -->
+    
+    <style>
+        /* Global styles */
+    body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9; /* Light grey background */
+        color: #333; /* Dark grey text */
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        color: #2a6b3a; /* Dark green */
+        margin-bottom: 30px;
+    }
+
+    /* Form Styling */
+    form {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: grid;
+        gap: 20px;
+    }
+
+    label {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    input[type="number"], select {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+    }
+
+    input[type="number"]:focus, select:focus {
+        border-color: #2a6b3a; /* Dark green */
+        background-color: #fff;
+    }
+
+    button {
+        background-color: #2a6b3a; /* Dark green */
+        color: white;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #1a4d2f; /* Darker green on hover */
+    }
+
+    /* Results Section */
+    #results {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+    }
+
+    .result-item {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .result-item strong {
+        color: #2a6b3a;
+    }
+
+    /* Chart Section */
+    #billingSavingsChart {
+        width: 100%;
+        height: 300px;
+    }
+
+    /* Solar Meme Section */
+    #solarMeme {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    #solarMeme img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+    #container-fluid {
+        margin-top: 40px;
+    }
+    
+
+    /* Responsive Styles */
+    @media (max-width: 600px) {
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+    }
+    </style>
+
+    <!-- Link to Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Link to Material Design Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Link to Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Solar Energy Savings Calculator</h1>
+
+        <form id="calculator-form">
+            <label for="monthlyConsumption">Monthly Energy Consumption (kWh):</label>
+            <input type="number" id="monthlyConsumption" value="500" required>
+
+            <label for="systemSize">Solar Panel System Size (kW):</label>
+            <input type="number" id="systemSize" value="5" required>
+
+            <label for="installationCost">Installation Cost ($):</label>
+            <input type="number" id="installationCost" value="12000" required>
+
+            <label for="sunlightHours">Average Sunlight Hours per Day:</label>
+            <input type="number" id="sunlightHours" value="5" required>
+
+            <label for="batteryCost">Battery Cost ($):</label>
+            <input type="number" id="batteryCost" value="7000" placeholder="Optional">
+
+            <label for="batteryCapacity">Battery Capacity (kWh):</label>
+            <input type="number" id="batteryCapacity" value="13.5" placeholder="Optional">
+
+            <label for="financingOption">Financing Option:</label>
+            <select id="financingOption">
+                <option value="none" selected>None</option>
+                <option value="loan">Loan</option>
+            </select>
+
+            <button type="submit">Calculate Savings</button>
+        </form>
+
+        <div id="results">
+            <h3>Results:</h3>
+            <p class="result-item"><strong>Energy Savings (kWh/year):</strong> <span id="energySavings"></span></p>
+            <p class="result-item"><strong>Annual Savings ($):</strong> <span id="annualSavings"></span></p>
+            <p class="result-item"><strong>Total Savings with Battery ($):</strong> <span id="totalSavingsWithBattery"></span></p>
+            <p class="result-item"><strong>Payback Period (years):</strong> <span id="paybackPeriod"></span></p>
+            <p class="result-item"><strong>Battery Savings ($):</strong> <span id="batterySavings"></span></p>
+            <p class="result-item"><strong>Net Installation Cost ($):</strong> <span id="netInstallationCost"></span></p>
+            <p class="result-item"><strong>Loan Monthly Payment ($):</strong> <span id="loanMonthlyPayment"></span></p>
+            <p class="result-item"><strong>Tax Credits and Incentives ($):</strong> <span id="totalIncentives"></span></p>
+
+            <!-- Canvas for Chart -->
+            <h3>Billing vs. Savings with Solar</h3>
+            <canvas id="billingSavingsChart" width="400" height="200"></canvas>
+
+            <!-- Solar Meme Section -->
+            <div id="solarMeme" style="display: none;">
+                <img src="https://i.kym-cdn.com/featured_items/icons/wide/000/026/702/just-a-chill-guy.jpg" alt="Solar Meme" width="300">
+                <p>Saving the planet when ur just-a-chill-guy!</p>
+                <img src="https://th.bing.com/th/id/OIP.sEZOno4D5k-tW_YFGVY0OwHaEK?rs=1&pid=ImgDetMain" width="200">
+            </div>
+        </div>
+        <head>
+            <title>Chatbot</title>
+            <link
+              rel="stylesheet"
+              href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+              crossorigin="anonymous"
+            />
+            <link
+              rel="stylesheet"
+              href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+              integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+              crossorigin="anonymous"
+            />
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <link
+              rel="stylesheet"
+              type="text/css"
+              href="{{ url_for('static', filename='style.css')}}"
+            />
+          </head>
+        
+          <body>
+            <div class="container-fluid h-100">
+              <div class="row justify-content-center h-100">
+                <div class="col-md-8 col-xl-6 chat">
+                  <div class="card">
+                    <div class="card-header msg_head">
+                      <div class="d-flex bd-highlight">
+                        <div class="user_info">
+                          <span>ChatBot</span>
+                          <p>Ask me anything!</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="messageFormeight" class="card-body msg_card_body"></div>
+                    <div class="card-footer">
+                      <form id="messageArea" class="input-group">
+                        <input
+                          type="text"
+                          id="text"
+                          name="msg"
+                          placeholder="Type your message..."
+                          autocomplete="off"
+                          class="form-control type_msg"
+                          required
+                        />
+                        <div class="input-group-append">
+                          <button
+                            type="submit"
+                            id="send"
+                            class="input-group-text send_btn"
+                          >
+                            <i class="fas fa-location-arrow"></i>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    </div>
+
+    <!-- Link to external JS file -->
+    <script>
+
+    document.getElementById('calculator-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const monthlyConsumption = parseFloat(document.getElementById('monthlyConsumption').value);
+    const systemSize = parseFloat(document.getElementById('systemSize').value);
+    const installationCost = parseFloat(document.getElementById('installationCost').value);
+    const sunlightHours = parseFloat(document.getElementById('sunlightHours').value);
+    const batteryCost = parseFloat(document.getElementById('batteryCost').value) || 0;
+    const batteryCapacity = parseFloat(document.getElementById('batteryCapacity').value) || 0;
+    const financingOption = document.getElementById('financingOption').value;
+
+    
+    const response = await fetch('http://localhost:5000/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            monthlyConsumption,
+            systemSize,
+            installationCost,
+            sunlightHours,
+            batteryCost,
+            batteryCapacity,
+            financingOption
+        })
+    });
+
+    const data = await response.json();
+
+    // Display results
+    document.getElementById('energySavings').textContent = data.energySavings;
+    document.getElementById('annualSavings').textContent = data.annualSavings;
+    document.getElementById('totalSavingsWithBattery').textContent = data.totalSavingsWithBattery;
+    document.getElementById('paybackPeriod').textContent = data.paybackPeriod;
+    document.getElementById('batterySavings').textContent = data.batterySavings;
+    document.getElementById('netInstallationCost').textContent = data.netInstallationCost;
+    document.getElementById('loanMonthlyPayment').textContent = data.loanMonthlyPayment;
+    document.getElementById('totalIncentives').textContent = data.totalIncentives;
+
+    // Hide the "loading" indicator if you have one
+    // document.getElementById('loading').style.display = 'none';
+
+    // Generate the chart
+    const ctx = document.getElementById('billingSavingsChart').getContext('2d');
+    const billingSavingsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Year 1', 'Year 5', 'Year 10', 'Year 15', 'Year 20', 'Year 30'],
+            datasets: [{
+                label: 'Actual Electricity Bill ($)',
+                data: [
+                    monthlyConsumption * 12 * 0.14, // Year 1
+                    monthlyConsumption * 12 * 0.14 * 5, // Year 5
+                    monthlyConsumption * 12 * 0.14 * 10, // Year 10
+                    monthlyConsumption * 12 * 0.14 * 15, // Year 15
+                    monthlyConsumption * 12 * 0.14 * 20, // Year 20
+                    monthlyConsumption * 12 * 0.14 * 30 // Year 30
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Savings with Solar ($)',
+                data: [
+                    data.annualSavings,
+                    data.annualSavings * 5,
+                    data.annualSavings * 10,
+                    data.annualSavings * 15,
+                    data.annualSavings * 20,
+                    data.annualSavings * 30
+                ],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Display the solar meme after calculation is complete
+    document.getElementById('solarMeme').style.display = 'block';
+});
+
+function scrollToBottom() {
+        var messageBody = document.getElementById("messageFormeight");
+        messageBody.scrollTop = messageBody.scrollHeight;
+      }
+
+      $(document).ready(function () {
+        $("#messageArea").on("submit", function (event) {
+          const date = new Date();
+          const hour = date.getHours();
+          const minute = date.getMinutes();
+          const str_time = hour + ":" + minute;
+          var rawText = $("#text").val();
+
+          var userHtml =
+            '<div class="d-flex justify-content-end mb-4"><div class="msg_cotainer_send">' +
+            rawText +
+            '<span class="msg_time_send">';
+
+          $("#text").val("");
+          $("#messageFormeight").append(userHtml);
+
+          scrollToBottom();
+
+          $.ajax({
+            data: {
+              msg: rawText,
+            },
+            type: "POST",
+            url: "/get",
+          }).done(function (data) {
+            var botHtml =
+              data +
+              "</span></div></div>";
+            $("#messageFormeight").append($.parseHTML(botHtml));
+            scrollToBottom();
+          });
+          event.preventDefault();
+        });
+      });
+    </script>
+</body>
+</html>
